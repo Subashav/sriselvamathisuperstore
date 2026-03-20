@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#ececec"/>
+  <circle cx="360" cy="410" r="210" fill="#4a4a4a"/>
+  <rect x="470" y="390" width="200" height="42" rx="20" fill="#2f2f2f"/>
+  <text x="400" y="650" text-anchor="middle" font-size="46" font-family="Arial" fill="#222">Non-Stick Pan</text>
+</svg>

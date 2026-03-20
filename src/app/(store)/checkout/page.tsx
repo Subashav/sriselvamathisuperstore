@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 export default function CheckoutPage() {
   return (
@@ -25,7 +25,7 @@ export default function CheckoutPage() {
               <Link href="/cart" className="rounded-xl border border-[#dfdfdf] px-4 py-2 text-sm font-semibold text-[#373737]">
                 Back to Cart
               </Link>
-              <Link href="/orders" className="rounded-xl bg-[#ffcc17] px-4 py-2 text-sm font-black text-[#1d1d1d]">
+              <Link href="/orders" className="rounded-xl bg-[#f97316] px-4 py-2 text-sm font-black text-[#1d1d1d]">
                 View Orders
               </Link>
             </div>
@@ -76,7 +76,7 @@ export default function CheckoutPage() {
                   </div>
                 </div>
               </div>
-              <Link href="/orders" className="mt-4 inline-flex w-full justify-center rounded-xl bg-[#ffcc17] px-4 py-3 text-sm font-black text-[#171717]">
+              <Link href="/orders" className="mt-4 inline-flex w-full justify-center rounded-xl bg-[#f97316] px-4 py-3 text-sm font-black text-[#171717]">
                 Place Order
               </Link>
             </aside>
@@ -86,3 +86,4 @@ export default function CheckoutPage() {
     </main>
   );
 }
+

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#dce9ff"/>
+  <polygon points="120,560 680,560 560,260 240,260" fill="#315dc5"/>
+  <text x="400" y="430" text-anchor="middle" font-size="54" font-family="Arial" fill="#ffffff">Turbo RC</text>
+  <text x="400" y="495" text-anchor="middle" font-size="32" font-family="Arial" fill="#eff4ff">Rechargeable</text>
+</svg>

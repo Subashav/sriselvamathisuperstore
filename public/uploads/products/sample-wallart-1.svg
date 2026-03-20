@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#f7f0ea"/>
+  <rect x="180" y="180" width="440" height="440" rx="12" fill="#ffffff" stroke="#8f6f56" stroke-width="10"/>
+  <text x="400" y="400" text-anchor="middle" font-size="54" font-family="Arial" fill="#5e4737">Wall Frame</text>
+  <text x="400" y="465" text-anchor="middle" font-size="32" font-family="Arial" fill="#5e4737">Decor Set</text>
+</svg>

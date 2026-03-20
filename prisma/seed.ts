@@ -11,6 +11,14 @@ const defaultCategories = [
   { name: "Home Decor", slug: "home-decor" },
 ] as const;
 
+const sampleProductImages: Record<string, string[]> = {
+  "TN-RICE-5KG": ["/uploads/products/sample-rice-1.svg", "/uploads/products/sample-rice-2.svg"],
+  "TN-TOY-CAR-01": ["/uploads/products/sample-toycar-1.svg", "/uploads/products/sample-toycar-2.svg"],
+  "TN-KITCH-PAN-01": ["/uploads/products/sample-frypan-1.svg", "/uploads/products/sample-frypan-2.svg"],
+  "TN-STAT-NOTE-01": ["/uploads/products/sample-notebook-1.svg", "/uploads/products/sample-notebook-2.svg"],
+  "TN-DECOR-FRAME-01": ["/uploads/products/sample-wallart-1.svg", "/uploads/products/sample-wallart-2.svg"],
+};
+
 async function main() {
   for (const category of defaultCategories) {
     await prisma.category.upsert({
@@ -250,6 +258,41 @@ async function main() {
         categoryId: decor.id,
         subCategoryId: decorSub?.id,
       },
+    });
+  }
+
+  const sampleProducts = await prisma.product.findMany({
+    where: {
+      sku: {
+        in: Object.keys(sampleProductImages),
+      },
+    },
+    select: {
+      id: true,
+      sku: true,
+    },
+  });
+
+  for (const product of sampleProducts) {
+    const existingImageCount = await prisma.productImage.count({
+      where: { productId: product.id },
+    });
+
+    if (existingImageCount > 0) {
+      continue;
+    }
+
+    const images = sampleProductImages[product.sku] ?? [];
+    if (!images.length) {
+      continue;
+    }
+
+    await prisma.productImage.createMany({
+      data: images.map((imageUrl, index) => ({
+        productId: product.id,
+        imageUrl,
+        sortOrder: index,
+      })),
     });
   }
 

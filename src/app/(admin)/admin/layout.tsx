@@ -12,28 +12,42 @@ const navItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#efefeb_0%,#f8f8f7_42%,#ffffff_100%)] text-[#1a1a1a]">
-      <header className="sticky top-0 z-30 border-b border-[#e6e6e2] bg-white/90 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#6c6c66]">Tamil Nadu Superstore</p>
-            <h1 className="text-lg font-black text-[#161616]">Admin Panel</h1>
+    <div className="min-h-screen bg-gray-50 text-slate-900">
+      <header className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
+        <div className="mx-auto flex w-full max-w-full px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex w-full items-center justify-between gap-8">
+            <div className="flex items-center gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Admin Panel</p>
+                <h1 className="text-lg font-bold text-yellow-500">Tamil Nadu Superstore</h1>
+              </div>
+            </div>
+
+            <Link
+              href="/"
+              className="ml-auto inline-flex items-center rounded-lg bg-yellow-500 px-4 py-2 text-xs font-semibold text-slate-900 hover:bg-yellow-400 transition-colors"
+            >
+              Open Storefront
+            </Link>
           </div>
-          <Link href="/" className="rounded-lg border border-[#d9d9d3] px-3 py-1.5 text-xs font-bold text-[#1b1b1b] transition hover:bg-[#f4f4f1]">
-            Open Storefront
-          </Link>
         </div>
 
-        <nav className="mx-auto flex w-full max-w-7xl gap-2 overflow-auto px-4 pb-3 sm:px-6 lg:px-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="whitespace-nowrap rounded-full border border-[#dfdfd8] bg-white px-4 py-1.5 text-xs font-bold text-[#3d3d38] transition hover:border-[#1e1e1e] hover:text-[#1e1e1e]"
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="border-t border-gray-200 bg-gray-100">
+          <div className="mx-auto max-w-full overflow-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex gap-2 py-2">
+              {navItems.map((item) => {
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="whitespace-nowrap rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition-colors hover:border-yellow-300 hover:text-yellow-500"
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
         </nav>
       </header>
 
@@ -41,3 +55,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
+
+
+

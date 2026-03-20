@@ -1,10 +1,10 @@
--- CreateTable
+﻿-- CreateTable
 CREATE TABLE "public"."OfferBanner" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
     "imageUrl" TEXT NOT NULL,
-    "bgColor" TEXT NOT NULL DEFAULT '#f6de48',
+    "bgColor" TEXT NOT NULL DEFAULT '#fb923c',
     "textColor" TEXT NOT NULL DEFAULT '#151515',
     "link" TEXT,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
@@ -17,3 +17,4 @@ CREATE TABLE "public"."OfferBanner" (
 
 -- CreateIndex
 CREATE INDEX "OfferBanner_isActive_sortOrder_idx" ON "public"."OfferBanner"("isActive", "sortOrder");
+

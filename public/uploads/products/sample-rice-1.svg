@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#f7f2e6"/>
+  <rect x="110" y="160" width="580" height="480" rx="28" fill="#d8c6a3"/>
+  <text x="400" y="360" text-anchor="middle" font-size="56" font-family="Arial" fill="#3a2f1d">Ponni Rice</text>
+  <text x="400" y="430" text-anchor="middle" font-size="36" font-family="Arial" fill="#3a2f1d">5 kg Pack</text>
+</svg>

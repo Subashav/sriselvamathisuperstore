@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { productFilterSchema } from "@/lib/validation/product";
 import { prisma } from "@/lib/db/prisma";
 import { listCatalogProducts } from "@/modules/products/product.service";
@@ -215,7 +215,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <Link href="/" className="rounded-xl border border-[#dfdfdf] px-4 py-2 text-sm font-semibold text-[#373737]">
                 Home
               </Link>
-              <Link href="/cart" className="rounded-xl bg-[#ffcc17] px-4 py-2 text-sm font-black text-[#1d1d1d]">
+              <Link href="/cart" className="rounded-xl bg-[#f97316] px-4 py-2 text-sm font-black text-[#1d1d1d]">
                 Go to Cart
               </Link>
             </div>
@@ -279,7 +279,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 <p className="mt-2 text-lg font-black text-[#f04747]">INR {product.price.toString()}</p>
                 <p className="text-xs text-[#9a9a9a] line-through">INR {product.mrp.toString()}</p>
                 <div className="mt-3 flex gap-2">
-                  <Link href="/cart" className="flex-1 rounded-lg bg-[#ffcc17] px-3 py-2 text-center text-xs font-black text-[#171717]">
+                  <Link href="/cart" className="flex-1 rounded-lg bg-[#f97316] px-3 py-2 text-center text-xs font-black text-[#171717]">
                     Add
                   </Link>
                   <Link href="/checkout" className="flex-1 rounded-lg border border-[#dfdfdf] px-3 py-2 text-center text-xs font-bold text-[#454545]">
@@ -301,3 +301,4 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     </main>
   );
 }
+

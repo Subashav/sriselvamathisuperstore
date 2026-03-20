@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#e8f2ff"/>
+  <rect x="130" y="220" width="540" height="380" rx="24" fill="#b8d6f7"/>
+  <text x="400" y="400" text-anchor="middle" font-size="52" font-family="Arial" fill="#174a7f">Ruled Notes</text>
+  <text x="400" y="465" text-anchor="middle" font-size="34" font-family="Arial" fill="#174a7f">School + Office</text>
+</svg>

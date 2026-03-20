@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 export default function CartPage() {
   return (
@@ -25,7 +25,7 @@ export default function CartPage() {
               <Link href="/products" className="rounded-xl border border-[#dfdfdf] px-4 py-2 text-sm font-semibold text-[#373737]">
                 Continue Shopping
               </Link>
-              <Link href="/checkout" className="rounded-xl bg-[#ffcc17] px-4 py-2 text-sm font-black text-[#1d1d1d]">
+              <Link href="/checkout" className="rounded-xl bg-[#f97316] px-4 py-2 text-sm font-black text-[#1d1d1d]">
                 Proceed to Checkout
               </Link>
             </div>
@@ -70,7 +70,7 @@ export default function CartPage() {
                   </div>
                 </div>
               </div>
-              <Link href="/checkout" className="mt-4 inline-flex w-full justify-center rounded-xl bg-[#ffcc17] px-4 py-3 text-sm font-black text-[#171717]">
+              <Link href="/checkout" className="mt-4 inline-flex w-full justify-center rounded-xl bg-[#f97316] px-4 py-3 text-sm font-black text-[#171717]">
                 Continue
               </Link>
             </aside>
@@ -80,3 +80,4 @@ export default function CartPage() {
     </main>
   );
 }
+

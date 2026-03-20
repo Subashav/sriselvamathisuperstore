@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -40,10 +41,20 @@ export default async function AdminOrdersPage() {
   return (
     <main className="px-4 py-8 sm:px-6 lg:px-8">
       <section className="mx-auto max-w-7xl rounded-2xl border border-[#d3e3f8] bg-white p-5 shadow-sm">
-        <h2 className="text-2xl font-black text-[#113d78]">Order Management</h2>
-        <p className="mt-2 text-sm text-[#58779a]">
-          Review recent orders and update status via PATCH /api/orders/[id]/status in your admin workflow.
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-2xl font-black text-[#113d78]">Order Management</h2>
+            <p className="mt-2 text-sm text-[#58779a]">
+              Review recent orders and update status via PATCH /api/orders/[id]/status in your admin workflow.
+            </p>
+          </div>
+          <Link
+            href="/api/admin/orders/export"
+            className="rounded-lg bg-[#111827] px-4 py-2 text-xs font-bold uppercase tracking-wide text-white transition hover:bg-[#1f2937]"
+          >
+            Download Orders CSV
+          </Link>
+        </div>
         {dbOffline ? (
           <p className="mt-3 rounded-xl border border-[#f2d4b5] bg-[#fff4e8] px-4 py-2 text-sm font-semibold text-[#9a5a17]">
             Database is offline. Orders cannot be loaded right now.

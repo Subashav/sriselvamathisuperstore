@@ -1,4 +1,4 @@
-generator client {
+﻿generator client {
   provider = "prisma-client-js"
 }
 
@@ -69,6 +69,11 @@ enum DiscountScope {
 enum DeliveryChargeType {
   FLAT
   DYNAMIC
+}
+
+enum BannerType {
+  TEXT
+  IMAGE
 }
 
 model User {
@@ -176,10 +181,11 @@ model SubCategory {
 
 model OfferBanner {
   id          String    @id @default(cuid())
+  type        BannerType @default(IMAGE)
   title       String
   description String?
-  imageUrl    String
-  bgColor     String    @default("#f6de48")
+  imageUrl    String?
+  bgColor     String    @default("#fb923c")
   textColor   String    @default("#151515")
   link        String?
   isActive    Boolean   @default(true)
@@ -480,3 +486,4 @@ model AuditLog {
 
   @@index([entity, entityId])
 }
+

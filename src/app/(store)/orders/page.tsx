@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
 
 export const dynamic = "force-dynamic";
@@ -50,7 +50,7 @@ export default async function OrdersPage() {
               <Link href="/products" className="rounded-xl border border-[#dfdfdf] px-4 py-2 text-sm font-semibold text-[#373737]">
                 Shop More
               </Link>
-              <Link href="/checkout" className="rounded-xl bg-[#ffcc17] px-4 py-2 text-sm font-black text-[#1d1d1d]">
+              <Link href="/checkout" className="rounded-xl bg-[#f97316] px-4 py-2 text-sm font-black text-[#1d1d1d]">
                 Checkout
               </Link>
             </div>
@@ -90,3 +90,4 @@ export default async function OrdersPage() {
     </main>
   );
 }
+

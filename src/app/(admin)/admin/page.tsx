@@ -11,12 +11,13 @@ export default async function AdminDashboardPage() {
   let customers = 0;
   let deliveredOrders = 0;
   let revenue: { _sum: { totalAmount: { toString(): string } | null } } = { _sum: { totalAmount: null } };
+  let orderHealth: Array<{ status: string; _count: { _all: number } }> = [];
   let paymentHealth: Array<{ status: string; _count: { _all: number } }> = [];
   let reviewHealth: Array<{ status: string; _count: { _all: number } }> = [];
   let lowStock: Array<{ id: string; name: string; sku: string; stock: number; minStock: number }> = [];
 
   try {
-    [products, orders, pendingOrders, customers, deliveredOrders, revenue, paymentHealth, reviewHealth, lowStock] =
+    [products, orders, pendingOrders, customers, deliveredOrders, revenue, orderHealth, paymentHealth, reviewHealth, lowStock] =
       await Promise.all([
         prisma.product.count(),
         prisma.order.count(),
@@ -31,6 +32,12 @@ export default async function AdminDashboardPage() {
             status: {
               in: ["CONFIRMED", "SHIPPED", "DELIVERED"],
             },
+          },
+        }),
+        prisma.order.groupBy({
+          by: ["status"],
+          _count: {
+            _all: true,
           },
         }),
         prisma.paymentTransaction.groupBy({
@@ -68,8 +75,34 @@ export default async function AdminDashboardPage() {
     dbOffline = true;
   }
 
+  const orderMap = Object.fromEntries(orderHealth.map((item) => [item.status, item._count._all]));
   const paymentMap = Object.fromEntries(paymentHealth.map((item) => [item.status, item._count._all]));
   const reviewMap = Object.fromEntries(reviewHealth.map((item) => [item.status, item._count._all]));
+
+  const orderChart = [
+    { label: "Pending", value: orderMap.PENDING ?? 0 },
+    { label: "Confirmed", value: orderMap.CONFIRMED ?? 0 },
+    { label: "Shipped", value: orderMap.SHIPPED ?? 0 },
+    { label: "Delivered", value: orderMap.DELIVERED ?? 0 },
+    { label: "Cancelled", value: orderMap.CANCELLED ?? 0 },
+  ];
+
+  const paymentChart = [
+    { label: "Captured", value: paymentMap.CAPTURED ?? 0 },
+    { label: "Authorized", value: paymentMap.AUTHORIZED ?? 0 },
+    { label: "Created", value: paymentMap.CREATED ?? 0 },
+    { label: "Failed", value: paymentMap.FAILED ?? 0 },
+  ];
+
+  const reviewChart = [
+    { label: "Pending", value: reviewMap.PENDING ?? 0 },
+    { label: "Approved", value: reviewMap.APPROVED ?? 0 },
+    { label: "Rejected", value: reviewMap.REJECTED ?? 0 },
+  ];
+
+  const orderMax = Math.max(1, ...orderChart.map((item) => item.value));
+  const paymentMax = Math.max(1, ...paymentChart.map((item) => item.value));
+  const reviewMax = Math.max(1, ...reviewChart.map((item) => item.value));
 
   const cards = [
     { title: "Gross Revenue", value: `INR ${Number(revenue._sum.totalAmount ?? 0).toFixed(2)}`, note: "Captured + fulfilled orders" },
@@ -89,127 +122,204 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <main className="px-4 py-8 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-gray-50 px-4 py-8 sm:px-6 lg:px-8">
       <section className="mx-auto max-w-7xl">
-        <h2 className="text-3xl font-black text-[#113d78]">Operations Dashboard</h2>
-        <p className="mt-2 text-sm text-[#56779c]">
-          Monitor commerce performance, stock health, payments, and review moderation from one control center.
-        </p>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-yellow-500">Dashboard</h1>
+          <p className="mt-2 text-sm text-gray-600">Monitor your store's performance and analytics</p>
+        </div>
+
         {dbOffline ? (
-          <p className="mt-3 rounded-xl border border-[#f2d4b5] bg-[#fff4e8] px-4 py-2 text-sm font-semibold text-[#9a5a17]">
-            Database is currently offline. Panel is in fallback mode until PostgreSQL is available.
-          </p>
+          <div className="mb-6 rounded-lg border-l-4 border-orange-500 bg-white p-4">
+            <p className="text-sm font-semibold text-orange-600">Database offline - Panel in fallback mode</p>
+          </div>
         ) : null}
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-          {cards.map((card) => (
-            <article key={card.title} className="rounded-2xl border border-[#d3e3f8] bg-white p-5 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#275792]">{card.title}</p>
-              <p className="mt-2 text-2xl font-extrabold text-slate-900">{card.value}</p>
-              <p className="mt-2 text-xs text-slate-500">{card.note}</p>
-            </article>
-          ))}
+        <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {cards.map((card) => {
+            return (
+              <article key={card.title} className="rounded-lg bg-white border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-xs font-semibold uppercase text-gray-600 tracking-wider">{card.title}</p>
+                <div className="mt-3 flex items-end gap-2">
+                  <p className="text-2xl font-bold text-yellow-500">{card.value.split(" ")[0]}</p>
+                  <span className="text-sm text-gray-500">{card.value.split(" ").slice(1).join(" ")}</span>
+                </div>
+                <p className="mt-2 text-xs text-gray-500">{card.note}</p>
+              </article>
+            );
+          })}
         </div>
 
-        <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          <article className="rounded-2xl border border-[#d3e3f8] bg-white p-5 shadow-sm">
-            <p className="text-sm font-bold uppercase tracking-[0.12em] text-[#275792]">Quick Actions</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {quickActions.map((action) => (
-                <Link
-                  key={action.label}
-                  href={action.href}
-                  className="rounded-xl border border-[#d2e3f8] px-4 py-3 text-sm font-semibold text-[#1e4f8d] transition hover:bg-[#f4f8ff]"
-                >
-                  {action.label}
-                </Link>
-              ))}
+        <div className="mb-8 grid gap-6 lg:grid-cols-2">
+          <article className="rounded-lg bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div className="border-b border-gray-200 px-6 py-4">
+              <h3 className="text-base font-bold text-slate-900">Quick Actions</h3>
+            </div>
+            <div className="p-6">
+              <div className="grid gap-2 sm:grid-cols-2">
+                {quickActions.map((action) => (
+                  <Link
+                    key={action.label}
+                    href={action.href}
+                    className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-800 transition-colors hover:border-yellow-300 hover:text-yellow-500"
+                  >
+                    {action.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </article>
 
-          <article className="rounded-2xl border border-[#d3e3f8] bg-white p-5 shadow-sm">
-            <p className="text-sm font-bold uppercase tracking-[0.12em] text-[#275792]">Platform Health</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl bg-[#edf4ff] p-3">
-                <p className="text-xs font-semibold uppercase text-[#355f92]">Payments Captured</p>
-                <p className="mt-1 text-2xl font-black text-[#0f4ea5]">{paymentMap.CAPTURED ?? 0}</p>
-              </div>
-              <div className="rounded-xl bg-[#edf4ff] p-3">
-                <p className="text-xs font-semibold uppercase text-[#355f92]">Payments Failed</p>
-                <p className="mt-1 text-2xl font-black text-[#0f4ea5]">{paymentMap.FAILED ?? 0}</p>
-              </div>
-              <div className="rounded-xl bg-[#edf4ff] p-3">
-                <p className="text-xs font-semibold uppercase text-[#355f92]">Pending Reviews</p>
-                <p className="mt-1 text-2xl font-black text-[#0f4ea5]">{reviewMap.PENDING ?? 0}</p>
-              </div>
-              <div className="rounded-xl bg-[#edf4ff] p-3">
-                <p className="text-xs font-semibold uppercase text-[#355f92]">Approved Reviews</p>
-                <p className="mt-1 text-2xl font-black text-[#0f4ea5]">{reviewMap.APPROVED ?? 0}</p>
+          <article className="rounded-lg bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div className="border-b border-gray-200 px-6 py-4">
+              <h3 className="text-base font-bold text-slate-900">Platform Health</h3>
+            </div>
+            <div className="p-6">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-lg border border-gray-200 p-4 bg-gray-50">
+                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Payments Captured</p>
+                  <p className="mt-2 text-2xl font-bold text-yellow-500">{paymentMap.CAPTURED ?? 0}</p>
+                </div>
+                <div className="rounded-lg border border-gray-200 p-4 bg-gray-50">
+                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Payments Failed</p>
+                  <p className="mt-2 text-2xl font-bold text-gray-700">{paymentMap.FAILED ?? 0}</p>
+                </div>
+                <div className="rounded-lg border border-gray-200 p-4 bg-gray-50">
+                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Pending Reviews</p>
+                  <p className="mt-2 text-2xl font-bold text-yellow-500">{reviewMap.PENDING ?? 0}</p>
+                </div>
+                <div className="rounded-lg border border-gray-200 p-4 bg-gray-50">
+                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Approved Reviews</p>
+                  <p className="mt-2 text-2xl font-bold text-yellow-500">{reviewMap.APPROVED ?? 0}</p>
+                </div>
               </div>
             </div>
           </article>
         </div>
 
-        <article className="mt-6 rounded-2xl border border-[#d3e3f8] bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-bold uppercase tracking-[0.12em] text-[#275792]">Low Stock Alert</p>
-            <Link href="/admin/products" className="text-xs font-bold text-[#1768d6]">
-              Open Products
+        <article className="rounded-lg bg-white border border-gray-200 shadow-sm overflow-hidden mb-8">
+          <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+            <h3 className="text-base font-bold text-slate-900">Low Stock Alert</h3>
+            <Link href="/admin/products" className="text-xs font-semibold text-yellow-500 transition-colors hover:text-yellow-500">
+              View All
             </Link>
           </div>
 
-          <div className="mt-4 space-y-2">
+          <div className="p-6">
             {lowStock.length ? (
-              lowStock.map((item) => (
-                <div key={item.id} className="flex items-center justify-between rounded-xl border border-[#deebfb] p-3 text-sm">
-                  <div>
-                    <p className="font-bold text-[#1d4f8f]">{item.name}</p>
-                    <p className="text-xs text-[#60799a]">SKU: {item.sku}</p>
+              <div className="space-y-2">
+                {lowStock.map((item) => (
+                  <div key={item.id} className="rounded-lg border border-gray-200 p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-slate-900">{item.name}</p>
+                        <p className="text-xs text-gray-500 mt-1">SKU: {item.sku}</p>
+                      </div>
+                      <div className="rounded bg-yellow-100 px-3 py-1 text-sm font-bold text-yellow-500">
+                        {item.stock} / {item.minStock}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-[#60799a]">Stock / Min</p>
-                    <p className="font-black text-[#c65c00]">
-                      {item.stock} / {item.minStock}
-                    </p>
-                  </div>
-                </div>
-              ))
+                ))}
+              </div>
             ) : (
-              <p className="rounded-xl bg-[#f6faff] p-3 text-sm text-[#58779b]">All products are above minimum stock threshold.</p>
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-center">
+                <p className="text-sm font-semibold text-slate-700">All products are above minimum stock</p>
+              </div>
             )}
           </div>
         </article>
 
-        <article className="mt-6 rounded-2xl border border-[#d3e3f8] bg-white p-5 shadow-sm">
-          <p className="text-sm font-bold uppercase tracking-[0.12em] text-[#275792]">Admin APIs</p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Link
-              href="/api/products?mode=admin"
-              className="rounded-xl border border-[#d2e3f8] px-4 py-3 text-sm font-semibold text-[#1e4f8d] transition hover:bg-[#f4f8ff]"
-            >
-              Products API
-            </Link>
-            <Link
-              href="/api/orders?mode=admin"
-              className="rounded-xl border border-[#d2e3f8] px-4 py-3 text-sm font-semibold text-[#1e4f8d] transition hover:bg-[#f4f8ff]"
-            >
-              Orders API
-            </Link>
-            <Link
-              href="/api/admin/payments/reconciliation"
-              className="rounded-xl border border-[#d2e3f8] px-4 py-3 text-sm font-semibold text-[#1e4f8d] transition hover:bg-[#f4f8ff]"
-            >
-              Reconciliation API
-            </Link>
-            <Link
-              href="/api/admin/overview"
-              className="rounded-xl border border-[#d2e3f8] px-4 py-3 text-sm font-semibold text-[#1e4f8d] transition hover:bg-[#f4f8ff]"
-            >
-              Overview API
-            </Link>
+        <article className="rounded-lg bg-white border border-gray-200 shadow-sm overflow-hidden">
+          <div className="border-b border-gray-200 px-6 py-4">
+            <h3 className="text-base font-bold text-slate-900">Admin APIs</h3>
+          </div>
+          <div className="p-6">
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              <Link href="/api/products?mode=admin" className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-800 transition-colors hover:border-yellow-300 hover:text-yellow-500">
+                Products API
+              </Link>
+              <Link href="/api/orders?mode=admin" className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-800 transition-colors hover:border-yellow-300 hover:text-yellow-500">
+                Orders API
+              </Link>
+              <Link href="/api/admin/payments/reconciliation" className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-800 transition-colors hover:border-yellow-300 hover:text-yellow-500">
+                Reconciliation API
+              </Link>
+              <Link href="/api/admin/overview" className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-800 transition-colors hover:border-yellow-300 hover:text-yellow-500">
+                Overview API
+              </Link>
+            </div>
           </div>
         </article>
+
+        <div className="mt-8 grid gap-6 lg:grid-cols-3">
+          <article className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900">Orders Graph</h3>
+            <p className="mt-1 text-xs text-gray-500">Order lifecycle distribution</p>
+            <div className="mt-4 space-y-3">
+              {orderChart.map((item) => (
+                <div key={item.label}>
+                  <div className="mb-1 flex items-center justify-between text-xs font-semibold text-gray-600">
+                    <span>{item.label}</span>
+                    <span>{item.value}</span>
+                  </div>
+                  <div className="h-2 rounded bg-gray-100">
+                    <div
+                      className="h-2 rounded bg-yellow-500"
+                      style={{ width: `${Math.max(6, (item.value / orderMax) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <article className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900">Payments Graph</h3>
+            <p className="mt-1 text-xs text-gray-500">Payment status overview</p>
+            <div className="mt-4 space-y-3">
+              {paymentChart.map((item) => (
+                <div key={item.label}>
+                  <div className="mb-1 flex items-center justify-between text-xs font-semibold text-gray-600">
+                    <span>{item.label}</span>
+                    <span>{item.value}</span>
+                  </div>
+                  <div className="h-2 rounded bg-gray-100">
+                    <div
+                      className="h-2 rounded bg-slate-900"
+                      style={{ width: `${Math.max(6, (item.value / paymentMax) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <article className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900">Reviews Graph</h3>
+            <p className="mt-1 text-xs text-gray-500">Moderation queue and outcomes</p>
+            <div className="mt-4 space-y-3">
+              {reviewChart.map((item) => (
+                <div key={item.label}>
+                  <div className="mb-1 flex items-center justify-between text-xs font-semibold text-gray-600">
+                    <span>{item.label}</span>
+                    <span>{item.value}</span>
+                  </div>
+                  <div className="h-2 rounded bg-gray-100">
+                    <div
+                      className="h-2 rounded bg-yellow-500"
+                      style={{ width: `${Math.max(6, (item.value / reviewMax) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
       </section>
     </main>
   );
 }
+
+
+

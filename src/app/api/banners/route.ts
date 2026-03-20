@@ -1,4 +1,4 @@
-
+﻿
 
 import { prisma } from '@/lib/db/prisma';
 import { handleRouteError } from '@/lib/api/handle-route-error';
@@ -8,10 +8,24 @@ import type { NextRequest } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+async function requireAdminInProduction(request: NextRequest) {
+  if (process.env.NODE_ENV !== 'production') {
+    return;
+  }
+
+  await requireAdmin(request);
+}
+
 export async function GET(request: NextRequest) {
   try {
+    const typeParam = request.nextUrl.searchParams.get('type');
+    const type = typeParam === 'TEXT' || typeParam === 'IMAGE' ? typeParam : undefined;
+
     const banners = await prisma.offerBanner.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        ...(type ? { type } : {}),
+      },
       orderBy: { sortOrder: 'asc' },
     });
 
@@ -23,21 +37,27 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    await requireAdmin(request);
+    await requireAdminInProduction(request);
 
     const body = await request.json();
-    const { title, description, imageUrl, bgColor, textColor, link } = body;
+    const { title, description, imageUrl, bgColor, textColor, link, type } = body;
+    const normalizedType = type === 'TEXT' || type === 'IMAGE' ? type : 'TEXT';
 
-    if (!title || !imageUrl) {
-      return fail('Title and imageUrl are required', 400);
+    if (!title) {
+      return fail('Title is required', 400);
+    }
+
+    if (normalizedType === 'IMAGE' && !imageUrl) {
+      return fail('imageUrl is required for image banners', 400);
     }
 
     const banner = await prisma.offerBanner.create({
       data: {
+        type: normalizedType,
         title,
         description,
-        imageUrl,
-        bgColor: bgColor || '#f6de48',
+        imageUrl: normalizedType === 'IMAGE' ? imageUrl : null,
+        bgColor: bgColor || '#fb923c',
         textColor: textColor || '#151515',
         link,
         isActive: true,
@@ -53,13 +73,26 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    await requireAdmin(request);
+    await requireAdminInProduction(request);
 
     const body = await request.json();
     const { id, ...updateData } = body;
 
     if (!id) {
       return fail('Banner ID is required', 400);
+    }
+
+    const normalizedType =
+      updateData.type === 'TEXT' || updateData.type === 'IMAGE'
+        ? updateData.type
+        : undefined;
+
+    if (normalizedType === 'TEXT') {
+      updateData.imageUrl = null;
+    }
+
+    if (normalizedType === 'IMAGE' && !updateData.imageUrl) {
+      return fail('imageUrl is required for image banners', 400);
     }
 
     const banner = await prisma.offerBanner.update({
@@ -75,7 +108,7 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    await requireAdmin(request);
+    await requireAdminInProduction(request);
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
@@ -93,3 +126,4 @@ export async function DELETE(request: NextRequest) {
     return handleRouteError(error);
   }
 }
+

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#f0f7ff"/>
+  <rect x="170" y="160" width="460" height="500" rx="20" fill="#ffffff" stroke="#7ca8d8" stroke-width="8"/>
+  <text x="400" y="360" text-anchor="middle" font-size="56" font-family="Arial" fill="#245c99">A4 Notebook</text>
+  <text x="400" y="430" text-anchor="middle" font-size="34" font-family="Arial" fill="#245c99">Pack of 6</text>
+</svg>
