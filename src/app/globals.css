@@ -1,26 +1,105 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #ece8e2;
+  --foreground: #111111;
+  --surface: #ffffff;
+  --brand: #ffd73a;
+  --brand-deep: #151515;
+  --accent: #00abc8;
+  --muted: #6f6f6f;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-jakarta-sans);
+  --font-mono: var(--font-sora);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-jakarta-sans), "Segoe UI", sans-serif;
+}
+
+.uni-shell {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 16%, rgba(255, 255, 255, 0.65) 0%, transparent 42%),
+    radial-gradient(circle at 82% 75%, rgba(255, 255, 255, 0.55) 0%, transparent 46%),
+    #e9e5df;
+}
+
+.uni-glow {
+  pointer-events: none;
+  position: absolute;
+  height: 420px;
+  width: 420px;
+  border-radius: 999px;
+  filter: blur(6px);
+  opacity: 0.6;
+}
+
+.uni-glow-left {
+  left: -160px;
+  top: 28%;
+  background: radial-gradient(circle, rgba(248, 211, 118, 0.9) 0%, rgba(248, 211, 118, 0) 72%);
+}
+
+.uni-glow-right {
+  right: -120px;
+  bottom: -30px;
+  background: radial-gradient(circle, rgba(77, 161, 255, 0.85) 0%, rgba(77, 161, 255, 0) 68%);
+}
+
+.hero-card {
+  isolation: isolate;
+}
+
+.headphone-band {
+  position: absolute;
+  right: 42px;
+  top: 16px;
+  z-index: -1;
+  height: 170px;
+  width: 170px;
+  border: 14px solid rgba(245, 214, 92, 0.9);
+  border-radius: 100px;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  rotate: 22deg;
+}
+
+.headphone-cup {
+  position: absolute;
+  right: 62px;
+  bottom: 18px;
+  z-index: -1;
+  height: 88px;
+  width: 88px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 25%, #fff4b8 0%, #f4cf3d 75%);
+  box-shadow: 0 10px 24px rgba(155, 119, 0, 0.3);
+}
+
+.phone-showcase {
+  animation: float-soft 5.5s ease-in-out infinite;
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 1280px) {
+  .phone-showcase {
+    animation: none;
+  }
 }
