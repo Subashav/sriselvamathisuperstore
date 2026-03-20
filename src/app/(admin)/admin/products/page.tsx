@@ -335,222 +335,208 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
   const allSubcategories = categories.flatMap((category) => category.subcategories);
 
   return (
-    <main className="px-4 py-8 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
+    <main className="p-6 lg:p-10">
       <section className="mx-auto max-w-7xl">
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-yellow-500">Products</h2>
-          <p className="mt-1 text-sm text-gray-600">Manage products with direct image upload. Minimum 2 images required.</p>
+        <div className="mb-10">
+          <h2 className="text-3xl font-black tracking-tight text-slate-900">Products Inventory</h2>
+          <p className="mt-1 text-sm font-medium text-slate-500">Add, update, and manage your store's catalog.</p>
         </div>
 
         {dbOffline ? (
-          <article className="mb-6 rounded-lg border-l-4 border-orange-500 bg-white p-4">
-            <p className="text-sm font-semibold text-orange-600">Database offline - Management unavailable</p>
+          <article className="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+            <p className="text-sm font-bold text-amber-800">Database offline - Management functionality is limited.</p>
           </article>
         ) : null}
 
-        <form action={createProductAction} className="mb-6 rounded-lg bg-white border border-gray-200 p-4 shadow-sm">
-          <h3 className="mb-4 font-semibold text-slate-900">Create New Product</h3>
-          <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-5">
-            <input name="name" required placeholder="Product name" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-            <input name="sku" placeholder="SKU" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-            <input name="price" type="number" step="0.01" required placeholder="Price" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-            <input name="mrp" type="number" step="0.01" required placeholder="MRP" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-            <input name="stock" type="number" required placeholder="Stock" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-            <input name="minStock" type="number" required placeholder="Min stock" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-            <input name="gstRate" type="number" step="0.01" defaultValue={5} placeholder="GST %" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-            <select name="status" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" defaultValue="ACTIVE">
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="DRAFT">DRAFT</option>
-              <option value="INACTIVE">INACTIVE</option>
-            </select>
-            <select name="categoryId" required className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200">
-              <option value="">Select category</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>{category.name}</option>
-              ))}
-            </select>
-            <select name="subCategoryId" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200">
-              <option value="">Optional subcategory</option>
-              {categories.map((category) =>
-                category.subcategories.map((subCategory) => (
-                  <option key={subCategory.id} value={subCategory.id}>{category.name} / {subCategory.name}</option>
-                )),
-              )}
-            </select>
-            <label className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-yellow-50 cursor-pointer transition-colors">
-              <input type="checkbox" name="isFeatured" />
-              Featured
-            </label>
-            <textarea name="description" required placeholder="Description" className="min-h-10 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200 md:col-span-2 lg:col-span-3" />
-            <div className="md:col-span-1 lg:col-span-2">
-              <label className="mb-1 block text-xs font-semibold text-gray-600 uppercase">Images (min 2)</label>
-              <input name="images" type="file" accept="image/png,image/jpeg,image/webp" multiple required className="block w-full text-sm rounded-lg border border-gray-200 px-3 py-2" />
+        {/* Create Form */}
+        <form action={createProductAction} className="mb-10 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <h3 className="mb-6 text-sm font-black uppercase tracking-widest text-slate-900">Add New Product</h3>
+          <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">Product Name</label>
+              <input name="name" required placeholder="e.g. Basmati Rice" className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-50" />
             </div>
-            <button type="submit" className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-yellow-400 transition-colors md:col-span-1">
-              Create
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">SKU</label>
+              <input name="sku" placeholder="Optional" className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:border-amber-400" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">Selling Price</label>
+              <input name="price" type="number" step="0.01" required placeholder="0.00" className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:border-amber-400" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">MRP</label>
+              <input name="mrp" type="number" step="0.01" required placeholder="0.00" className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:border-amber-400" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">Current Stock</label>
+              <input name="stock" type="number" required placeholder="0" className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:border-amber-400" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">Min Stock Warning</label>
+              <input name="minStock" type="number" required placeholder="5" className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:border-amber-400" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">Status</label>
+              <select name="status" className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:border-amber-400" defaultValue="ACTIVE">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="DRAFT">DRAFT</option>
+                <option value="INACTIVE">INACTIVE</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">Category</label>
+              <select name="categoryId" required className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:border-amber-400">
+                <option value="">Select...</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>{category.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="md:col-span-2 space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">Images (Minimum 2 required)</label>
+              <input name="images" type="file" accept="image/png,image/jpeg,image/webp" multiple required className="block w-full text-xs font-bold rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 cursor-pointer" />
+            </div>
+            <div className="md:col-span-2 space-y-1">
+              <label className="text-[10px] font-bold uppercase text-slate-400">Short Description</label>
+              <textarea name="description" required placeholder="Describe the product..." className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-bold outline-none focus:border-amber-400" rows={1} />
+            </div>
+          </div>
+          <div className="mt-8 flex justify-end">
+            <button type="submit" className="rounded-2xl bg-slate-900 px-10 py-4 text-sm font-black text-white shadow-xl transition-all hover:bg-slate-800 active:scale-95">
+              🚀 Create Product
             </button>
           </div>
         </form>
 
-        <form method="GET" className="mb-6 rounded-lg bg-white border border-gray-200 p-4 shadow-sm">
-          <h3 className="mb-3 font-semibold text-slate-900">Filters</h3>
-          <div className="grid gap-3 md:grid-cols-6">
-            <input name="q" defaultValue={q} placeholder="Search name/SKU" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200 md:col-span-2" />
-            <select name="categoryId" defaultValue={categoryId} className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200">
-              <option value="">All categories</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>{category.name}</option>
-              ))}
-            </select>
-            <select name="subCategoryId" defaultValue={subCategoryId} className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200">
-              <option value="">All subcategories</option>
-              {allSubcategories.map((subCategory) => (
-                <option key={subCategory.id} value={subCategory.id}>{subCategory.name}</option>
-              ))}
-            </select>
-            <select name="status" defaultValue={status} className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200">
-              <option value="">All status</option>
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="DRAFT">DRAFT</option>
-              <option value="INACTIVE">INACTIVE</option>
-            </select>
-            <select name="featured" defaultValue={featured} className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200">
-              <option value="">Any featured</option>
-              <option value="true">Featured only</option>
-              <option value="false">Non-featured</option>
-            </select>
-            <div className="flex gap-2">
-              <button type="submit" className="flex-1 rounded-lg bg-yellow-500 px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-yellow-400 transition-colors">
-                Filter
-              </button>
-              <a href="/admin/products" className="flex-1 rounded-lg bg-gray-200 px-3 py-2 text-center text-sm font-semibold text-gray-700 hover:bg-gray-300 transition-colors">
-                Clear
-              </a>
-            </div>
+        {/* Filters */}
+        <form method="GET" className="mb-10 flex flex-wrap items-center gap-4">
+          <div className="flex-1 min-w-[200px] relative">
+            <input name="q" defaultValue={q} placeholder="Search name or SKU..." className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold outline-none focus:border-amber-400 shadow-sm" />
           </div>
+          <select name="categoryId" defaultValue={categoryId} className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold outline-none shadow-sm capitalize">
+            <option value="">All Categories</option>
+            {categories.map((cat) => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+          </select>
+          <select name="status" defaultValue={status} className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold outline-none shadow-sm">
+            <option value="">Any Status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="DRAFT">Draft</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+          <button type="submit" className="rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black text-slate-900 shadow-lg shadow-amber-200/50 hover:bg-amber-400 transition-all">
+            Apply Filters
+          </button>
+          <a href="/admin/products" className="rounded-2xl bg-white border border-slate-200 px-6 py-3 text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all">
+            Reset
+          </a>
         </form>
 
-        {/* Stats Cards */}
-        <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-lg bg-white border border-gray-200 p-4 shadow-sm">
-            <p className="text-xs font-semibold uppercase text-gray-600">Total Products</p>
-            <p className="mt-2 text-2xl font-bold text-yellow-500">{products.length}</p>
-          </div>
-          <div className="rounded-lg bg-white border border-gray-200 p-4 shadow-sm">
-            <p className="text-xs font-semibold uppercase text-gray-600">Active</p>
-            <p className="mt-2 text-2xl font-bold text-yellow-500">{products.filter((item) => item.status === "ACTIVE").length}</p>
-          </div>
-          <div className="rounded-lg bg-white border border-gray-200 p-4 shadow-sm">
-            <p className="text-xs font-semibold uppercase text-gray-600">Low Stock</p>
-            <p className="mt-2 text-2xl font-bold text-orange-600">{products.filter((item) => item.stock <= item.minStock).length}</p>
-          </div>
-          <div className="rounded-lg bg-white border border-gray-200 p-4 shadow-sm">
-            <p className="text-xs font-semibold uppercase text-gray-600">Featured</p>
-            <p className="mt-2 text-2xl font-bold text-yellow-500">{products.filter((item) => item.isFeatured).length}</p>
-          </div>
+        {/* Stats */}
+        <div className="mb-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { label: "Catalog Size", value: products.length, icon: "📊" },
+            { label: "Active Items", value: products.filter(p => p.status === "ACTIVE").length, icon: "✅" },
+            { label: "Critical Stock", value: products.filter(p => p.stock <= p.minStock).length, icon: "🚨", warning: true },
+            { label: "Featured Deals", value: products.filter(p => p.isFeatured).length, icon: "✨" },
+          ].map((stat) => (
+            <div key={stat.label} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{stat.label}</p>
+                <span className="text-xl">{stat.icon}</span>
+              </div>
+              <p className={`mt-2 text-3xl font-black ${stat.warning ? "text-rose-600" : "text-slate-900"}`}>{stat.value}</p>
+            </div>
+          ))}
         </div>
 
-        {/* Products Table */}
-        <div className="overflow-x-auto rounded-lg bg-white border border-gray-200 shadow-sm">
-          <table className="min-w-full text-left text-sm">
-            <thead className="border-b border-gray-200 bg-gray-50">
-              <tr className="text-xs uppercase tracking-wide text-gray-600 font-semibold">
-                <th className="px-4 py-3">Product</th>
-                <th className="px-4 py-3">Category</th>
-                <th className="px-4 py-3">Subcategory</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Stock</th>
-                <th className="px-4 py-3">Price</th>
-                <th className="px-4 py-3">Orders</th>
-                <th className="px-4 py-3">Updated</th>
-                <th className="px-4 py-3">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {products.map((product) => {
-                const isLowStock = product.stock <= product.minStock;
-                return (
-                  <Fragment key={product.id}>
-                    <tr className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          {product.images[0]?.imageUrl ? (
-                            <img src={product.images[0].imageUrl} alt={product.name} className="h-10 w-10 rounded object-cover" />
-                          ) : (
-                            <div className="h-10 w-10 rounded bg-gray-200" />
-                          )}
-                          <div>
-                            <p className="font-semibold text-slate-900">{product.name}</p>
-                            <p className="text-xs text-gray-500">SKU: {product.sku}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-gray-700">{product.category.name}</td>
-                      <td className="px-4 py-3 text-gray-700">{product.subCategory?.name ?? "-"}</td>
-                      <td className="px-4 py-3"><span className="inline-block rounded px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-500">{product.status}</span></td>
-                      <td className="px-4 py-3">
-                        <p className={`font-bold ${isLowStock ? "text-orange-600" : "text-slate-900"}`}>{product.stock}</p>
-                        <p className="text-xs text-gray-500">Min {product.minStock}</p>
-                      </td>
-                      <td className="px-4 py-3">
-                        <p className="font-bold text-slate-900">INR {product.price.toString()}</p>
-                        <p className="text-xs text-gray-500 line-through">INR {product.mrp.toString()}</p>
-                      </td>
-                      <td className="px-4 py-3 text-gray-700">{product._count.orderItems}</td>
-                      <td className="px-4 py-3 text-xs text-gray-500">{new Date(product.updatedAt).toLocaleString("en-IN")}</td>
-                      <td className="px-4 py-3">
-                        <form action={deleteProductAction} className="inline">
-                          <input type="hidden" name="id" value={product.id} />
-                          <button type="submit" className="text-xs font-semibold text-orange-600 hover:text-orange-700 transition-colors">Delete</button>
-                        </form>
-                      </td>
-                    </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-3" colSpan={9}>
-                        <form action={updateProductAction} className="grid gap-2 md:grid-cols-4 lg:grid-cols-8 xl:grid-cols-10">
-                          <input type="hidden" name="id" value={product.id} />
-                          <input name="name" defaultValue={product.name} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-                          <input name="sku" defaultValue={product.sku} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-                          <input name="price" type="number" step="0.01" defaultValue={Number(product.price).toString()} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-                          <input name="mrp" type="number" step="0.01" defaultValue={Number(product.mrp).toString()} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-                          <input name="stock" type="number" defaultValue={product.stock} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-                          <input name="minStock" type="number" defaultValue={product.minStock} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-                          <input name="gstRate" type="number" step="0.01" defaultValue={Number(product.gstRate).toString()} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200" />
-                          <select name="status" defaultValue={product.status} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400">
-                            <option value="ACTIVE">ACTIVE</option>
-                            <option value="DRAFT">DRAFT</option>
-                            <option value="INACTIVE">INACTIVE</option>
-                          </select>
-                          <label className="flex items-center gap-1 rounded border border-gray-200 px-2 py-1.5 text-xs font-semibold text-gray-700 hover:bg-yellow-50 cursor-pointer">
-                            <input type="checkbox" name="isFeatured" defaultChecked={product.isFeatured} />
-                            Featured
-                          </label>
-                          <select name="categoryId" defaultValue={product.category.id} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 md:col-span-1 lg:col-span-2">
-                            {categories.map((category) => (
-                              <option key={category.id} value={category.id}>{category.name}</option>
-                            ))}
-                          </select>
-                          <select name="subCategoryId" defaultValue={product.subCategory?.id ?? ""} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 md:col-span-1 lg:col-span-2">
-                            <option value="">No subcategory</option>
-                            {categories.map((category) =>
-                              category.subcategories.map((subCategory) => (
-                                <option key={subCategory.id} value={subCategory.id}>{category.name} / {subCategory.name}</option>
-                              )),
-                            )}
-                          </select>
-                          <input name="description" defaultValue={product.description} className="rounded border border-gray-200 px-2 py-1.5 text-xs outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-200 md:col-span-2 lg:col-span-3 xl:col-span-5" />
-                          <button type="submit" className="rounded bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-slate-900 hover:bg-yellow-400 transition-colors md:col-span-1">
-                            Update
-                          </button>
-                        </form>
-                      </td>
-                    </tr>
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
+        {/* Product List */}
+        <div className="space-y-4">
+          {products.map((product) => {
+            const isLowStock = product.stock <= product.minStock;
+            return (
+              <article key={product.id} className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-amber-100 hover:shadow-md">
+                <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
+                  {/* Image & Main Info */}
+                  <div className="flex flex-1 items-center gap-6">
+                    <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+                      {product.images[0]?.imageUrl ? (
+                        <img src={product.images[0].imageUrl} alt={product.name} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-2xl font-black text-slate-300">📦</div>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="truncate text-lg font-black text-slate-900">{product.name}</h4>
+                        {product.isFeatured && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[8px] font-black uppercase text-amber-600">Featured</span>}
+                      </div>
+                      <p className="mt-1 text-xs font-bold text-slate-400 uppercase tracking-widest">SKU: {product.sku}</p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <span className="rounded-lg bg-slate-50 px-2 py-1 text-[10px] font-bold text-slate-600">{product.category.name}</span>
+                        <span className={`rounded-lg px-2 py-1 text-[10px] font-bold ${
+                          product.status === "ACTIVE" ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
+                        }`}>{product.status}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Stock & Price */}
+                  <div className="flex items-center gap-10 lg:px-10 lg:border-l lg:border-r lg:border-slate-100">
+                    <div className="text-center">
+                      <p className="text-[10px] font-bold uppercase text-slate-400">Stock</p>
+                      <p className={`mt-1 text-xl font-black ${isLowStock ? "text-rose-600" : "text-slate-900"}`}>{product.stock}</p>
+                      <p className="text-[10px] font-medium text-slate-400">Min: {product.minStock}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[10px] font-bold uppercase text-slate-400">Price (INR)</p>
+                      <p className="mt-1 text-xl font-black text-slate-900">{product.price.toString()}</p>
+                      <p className="text-[10px] font-medium text-slate-400 line-through">{product.mrp.toString()}</p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-3">
+                    <form action={deleteProductAction}>
+                      <input type="hidden" name="id" value={product.id} />
+                      <button type="submit" className="rounded-xl border border-slate-100 p-3 text-xl transition-all hover:bg-rose-50 hover:text-rose-600 active:scale-90" title="Delete Product">
+                        🗑️
+                      </button>
+                    </form>
+                    <button className="flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-xs font-black text-white hover:bg-slate-800">
+                      ✏️ Edit
+                    </button>
+                  </div>
+                </div>
+
+                {/* Inline Edit Form (Simplified/Hidden by default - would need state but keeping for consistency) */}
+                <details className="mt-6 border-t border-slate-50 pt-6">
+                  <summary className="cursor-pointer text-center text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-amber-500">Quick Edit Details</summary>
+                  <form action={updateProductAction} className="mt-4 grid gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+                    <input type="hidden" name="id" value={product.id} />
+                    <input name="name" defaultValue={product.name} className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-bold outline-none focus:border-amber-400 col-span-2" />
+                    <input name="price" type="number" step="0.01" defaultValue={Number(product.price).toString()} className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-bold outline-none focus:border-amber-400" />
+                    <input name="stock" type="number" defaultValue={product.stock} className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-bold outline-none focus:border-amber-400" />
+                    <select name="status" defaultValue={product.status} className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-bold outline-none focus:border-amber-400">
+                      <option value="ACTIVE">ACTIVE</option>
+                      <option value="DRAFT">DRAFT</option>
+                      <option value="INACTIVE">INACTIVE</option>
+                    </select>
+                    <button type="submit" className="rounded-xl bg-amber-500 px-3 py-2 text-xs font-black text-slate-900 transition-all hover:bg-amber-400">
+                      Save
+                    </button>
+                  </form>
+                </details>
+              </article>
+            );
+          })}
         </div>
+
+        {products.length === 0 && (
+          <div className="mt-10 rounded-3xl border-2 border-dashed border-slate-100 py-20 text-center">
+            <p className="text-lg font-bold text-slate-400">No products found matching your search.</p>
+          </div>
+        )}
       </section>
     </main>
   );
