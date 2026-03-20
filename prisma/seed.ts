@@ -12,11 +12,11 @@ const defaultCategories = [
 ] as const;
 
 const sampleProductImages: Record<string, string[]> = {
-  "TN-RICE-5KG": ["/uploads/products/sample-rice-1.svg", "/uploads/products/sample-rice-2.svg"],
-  "TN-TOY-CAR-01": ["/uploads/products/sample-toycar-1.svg", "/uploads/products/sample-toycar-2.svg"],
-  "TN-KITCH-PAN-01": ["/uploads/products/sample-frypan-1.svg", "/uploads/products/sample-frypan-2.svg"],
-  "TN-STAT-NOTE-01": ["/uploads/products/sample-notebook-1.svg", "/uploads/products/sample-notebook-2.svg"],
-  "TN-DECOR-FRAME-01": ["/uploads/products/sample-wallart-1.svg", "/uploads/products/sample-wallart-2.svg"],
+  "TN-RICE-5KG": ["https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80"],
+  "TN-TOY-CAR-01": ["https://images.unsplash.com/photo-1596461404969-9ce20c71422b?w=500&q=80"],
+  "TN-KITCH-PAN-01": ["https://images.unsplash.com/photo-1584281723522-87063d8ff1b9?w=500&q=80"],
+  "TN-STAT-NOTE-01": ["https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=500&q=80"],
+  "TN-DECOR-FRAME-01": ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=500&q=80"],
 };
 
 async function main() {

@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { productFilterSchema } from "@/lib/validation/product";
 import { prisma } from "@/lib/db/prisma";
 import { listCatalogProducts } from "@/modules/products/product.service";
@@ -273,7 +273,15 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 className="rounded-2xl border border-[#ececec] bg-white p-4 shadow-[0_4px_14px_rgba(0,0,0,0.03)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_18px_rgba(0,0,0,0.06)]"
               >
                 <span className="inline-flex rounded-md bg-[#ff4e4e] px-2 py-1 text-[10px] font-black text-white">Offer</span>
-                <div className="mt-2 h-32 rounded-xl bg-[linear-gradient(135deg,#f5f5f5_0%,#ececec_100%)]" />
+                {product.images?.[0] ? (
+                  <img
+                    src={product.images[0].imageUrl}
+                    alt={product.name}
+                    className="mt-2 h-32 w-full rounded-xl object-cover"
+                  />
+                ) : (
+                  <div className="mt-2 h-32 rounded-xl bg-[linear-gradient(135deg,#f5f5f5_0%,#ececec_100%)]" />
+                )}
                 <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6e6e6e]">{product.category.name}</p>
                 <h2 className="mt-1 line-clamp-2 min-h-10 text-sm font-extrabold text-[#202020]">{product.name}</h2>
                 <p className="mt-2 text-lg font-black text-[#f04747]">INR {product.price.toString()}</p>

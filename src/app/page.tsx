@@ -1,6 +1,5 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
-import BannerCarousel from "@/components/banner-carousel";
 import OfferStripTicker from "@/components/offer-strip-ticker";
 import CustomerAuthNav from "@/components/customer-auth-nav";
 import HeroRotatingBanner from "@/components/hero-rotating-banner";
@@ -13,6 +12,7 @@ export default async function Home() {
     name: string;
     slug: string;
     description: string | null;
+    imageUrl?: string | null;
     subcategories: Array<{ id: string; name: string; slug: string; isActive: boolean }>;
   }> = [];
   let banners: Array<{ id: string; title: string; description?: string; imageUrl: string; bgColor: string; textColor: string; link?: string }> = [];
@@ -27,6 +27,7 @@ export default async function Home() {
           name: true,
           slug: true,
           description: true,
+          imageUrl: true,
           subcategories: {
             where: { isActive: true },
             orderBy: { name: "asc" },
@@ -147,7 +148,7 @@ export default async function Home() {
         name: category.name,
         slug: category.slug,
         tone: tones[index % tones.length],
-        imageUrl: categoryImageBySlug[category.slug],
+        imageUrl: category.imageUrl || categoryImageBySlug[category.slug] || categoryImageBySlug["groceries"],
       }))
     : [
         { name: "Groceries", slug: "", tone: tones[0], imageUrl: "/uploads/products/sample-rice-1.svg" },
@@ -323,9 +324,6 @@ export default async function Home() {
 
           <div className="mt-5 grid gap-5 xl:grid-cols-[1fr_320px]">
             <section>
-              {/* Banner Carousel */}
-              {banners.length > 0 && <BannerCarousel banners={banners} autoScrollInterval={5000} />}
-
               <HeroRotatingBanner autoScrollInterval={4200} />
 
               <section className="mt-4 rounded-2xl border border-[#ece6df] bg-[linear-gradient(145deg,#ffffff_0%,#fff7ef_100%)] p-3 shadow-[0_10px_24px_rgba(0,0,0,0.06)] sm:p-4">
@@ -489,20 +487,44 @@ export default async function Home() {
                   <span>9:41</span>
                   <span>4G</span>
                 </div>
-                <p className="text-[10px] font-bold uppercase text-[#a6a6a6]">XIAOMI</p>
-                <h3 className="mt-1 text-2xl font-black leading-tight text-[#191919]">Wireless Earbuds Redmi Buds 4 Lite</h3>
-                <span className="mt-3 inline-flex rounded-md bg-[#ff4f4f] px-2 py-1 text-[10px] font-black text-white">Offer</span>
-                <div className="mt-3 h-60 overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_30%_20%,#ffffff_0%,#ececec_76%)]">
-                  <img src="/uploads/products/sample-toycar-2.svg" alt="Featured product" className="h-full w-full object-cover" />
-                </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <div>
-                    <p className="text-3xl font-black text-[#ef4f4f]">INR 10,995</p>
-                    <p className="text-xs text-[#909090] line-through">INR 14,900</p>
-                    <p className="mt-1 text-xs font-bold text-[#3a9d6d]">In stock</p>
-                  </div>
-                  <p className="text-xs font-semibold text-[#787878]">4.8 (23)</p>
-                </div>
+                {bestSellers.length > 0 ? (
+                  <>
+                    <p className="text-[10px] font-bold uppercase text-[#a6a6a6]">Featured Deal</p>
+                    <h3 className="mt-1 line-clamp-2 min-h-16 text-2xl font-black leading-tight text-[#191919]">{bestSellers[0].name}</h3>
+                    <span className="mt-3 inline-flex rounded-md bg-[#ff4f4f] px-2 py-1 text-[10px] font-black text-white">Offer</span>
+                    <div className="mt-3 h-60 overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_30%_20%,#ffffff_0%,#ececec_76%)]">
+                      {bestSellers[0].imageUrl ? (
+                        <img src={bestSellers[0].imageUrl} alt="Featured product" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full bg-gray-200" />
+                      )}
+                    </div>
+                    <div className="mt-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-3xl font-black text-[#ef4f4f]">{bestSellers[0].price}</p>
+                        <p className="text-xs text-[#909090] line-through">{bestSellers[0].old}</p>
+                        <p className="mt-1 text-xs font-bold text-[#3a9d6d]">In stock</p>
+                      </div>
+                      <p className="text-xs font-semibold text-[#787878]">{bestSellers[0].rating} (23)</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-[10px] font-bold uppercase text-[#a6a6a6]">XIAOMI</p>
+                    <h3 className="mt-1 text-2xl font-black leading-tight text-[#191919]">Wireless Earbuds Redmi Buds 4 Lite</h3>
+                    <span className="mt-3 inline-flex rounded-md bg-[#ff4f4f] px-2 py-1 text-[10px] font-black text-white">Offer</span>
+                    <div className="mt-3 h-60 overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_30%_20%,#ffffff_0%,#ececec_76%)]">
+                      <div className="h-full w-full bg-gray-200" />
+                    </div>
+                    <div className="mt-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-3xl font-black text-[#ef4f4f]">INR 1,299</p>
+                        <p className="text-xs text-[#909090] line-through">INR 1,999</p>
+                        <p className="mt-1 text-xs font-bold text-[#3a9d6d]">In stock</p>
+                      </div>
+                    </div>
+                  </>
+                )}
                 <Link href="/cart" className="mt-4 inline-flex w-full justify-center rounded-xl bg-[#f97316] px-4 py-3 text-sm font-black text-[#171717]">
                   Add to Cart
                 </Link>
